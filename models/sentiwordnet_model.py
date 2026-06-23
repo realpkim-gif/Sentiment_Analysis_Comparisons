@@ -83,4 +83,5 @@ def get_accuracy(df):
     data['Overall Sentiment'] = overall
 
     accuracy = accuracy_score(data["sentiment"], data["Overall Sentiment"])
-    return ("SentiWordNet", f"{accuracy:.2%}")
+    preds = list(data["Overall Sentiment"])
+    return ("SentiWordNet", accuracy, preds)

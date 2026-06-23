@@ -23,4 +23,5 @@ def get_accuracy(df):
             correct += 1
 
     accuracy = correct / total
-    return ("TextBlob", f"{accuracy:.2%}")
+    preds = list(df["textblob_pred"])
+    return ("TextBlob", accuracy, preds)

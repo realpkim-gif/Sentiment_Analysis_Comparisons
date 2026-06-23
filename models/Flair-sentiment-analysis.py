@@ -1,9 +1,9 @@
 import math
-import re
 import numpy as np
 import pandas as pd
 from flair.models import TextClassifier
 from flair.data import Sentence
+from preprocessing.clean import remove_urls, deEmojify, remove_symbols, unify_whitespaces
 
 filename = r"dataFolder/train.csv"
 df = pd.read_csv(filename, encoding='latin-1')
@@ -12,27 +12,6 @@ oneFifth = math.ceil(len(df) * 0.05)
 df = df["text"].sample(oneFifth)
 df.reset_index(drop=True, inplace=True)
 df = df.to_frame()
-
-def remove_urls(x):
-    cleaned_string = re.sub(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b', '', str(x), flags=re.MULTILINE)
-    return cleaned_string
-
-def deEmojify(x):
-    regrex_pattern = re.compile(pattern="["
-        u"\U0001F600-\U0001F64F"
-        u"\U0001F300-\U0001F5FF"
-        u"\U0001F680-\U0001F6FF"
-        u"\U0001F1E0-\U0001F1FF"
-        "]+", flags=re.UNICODE)
-    return regrex_pattern.sub(r'', x)
-
-def unify_whitespaces(x):
-    cleaned_string = re.sub(r'\s+', ' ', x)
-    return cleaned_string
-
-def remove_symbols(x):
-    cleaned_string = re.sub(r"[^a-zA-Z0-9?!.,]+", ' ', x)
-    return cleaned_string
 
 df['text'] = df['text'].str.lower()
 df['text'] = df['text'].apply(remove_urls)

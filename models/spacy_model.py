@@ -19,4 +19,5 @@ def get_accuracy(df):
     y_pred = pipe.predict(X_test)
 
     accuracy = accuracy_score(y_test, y_pred)
-    return ("SpaCy + LR", f"{accuracy:.2%}")
+    preds = list(y_pred)
+    return ("SpaCy + LR", accuracy, preds)

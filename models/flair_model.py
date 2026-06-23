@@ -17,24 +17,21 @@ def flair_prediction(text):
         return None, None
 
 def get_accuracy(df):
-    # flair is slow so use 5% sample
-    oneFifth = math.ceil(len(df) * 0.05)
-    df_sample = df[df["sentiment"] != "neutral"].sample(oneFifth).copy()
+    df['text'] = df['text'].str.lower()
+    df['text'] = df['text'].apply(remove_urls)
+    df['text'] = df['text'].apply(deEmojify)
+    df['text'] = df['text'].apply(remove_symbols)
+    df['text'] = df['text'].apply(unify_whitespaces)
 
-    df_sample['text'] = df_sample['text'].str.lower()
-    df_sample['text'] = df_sample['text'].apply(remove_urls)
-    df_sample['text'] = df_sample['text'].apply(deEmojify)
-    df_sample['text'] = df_sample['text'].apply(remove_symbols)
-    df_sample['text'] = df_sample['text'].apply(unify_whitespaces)
-
-    df_sample["flair_pred"], df_sample["confidence"] = zip(*df_sample["text"].apply(flair_prediction))
+    df["flair_pred"], df["confidence"] = zip(*df["text"].apply(flair_prediction))
 
     correct = 0
     total = 0
-    for i in range(len(df_sample)):
+    for i in range(len(df)):
         total += 1
-        if df_sample["sentiment"].iloc[i] == df_sample["flair_pred"].iloc[i]:
+        if df["sentiment"].iloc[i] == df["flair_pred"].iloc[i]:
             correct += 1
 
     accuracy = correct / total
-    return ("Flair (5% pos/neg)", f"{accuracy:.2%}")
+    preds = list(df["flair_pred"])
+    return ("Flair", accuracy, preds)

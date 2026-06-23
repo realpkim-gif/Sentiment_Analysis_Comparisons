@@ -2,16 +2,16 @@ import pandas as pd
 import numpy as np
 from nltk.stem import WordNetLemmatizer
 import nltk
-from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-import re
-import spacy
 from nltk.corpus import sentiwordnet as swn
 from nltk.corpus import wordnet as wn
 from sklearn.metrics import classification_report
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from preprocessing.clean import preprocess_data_general, rem_stopwords_tokenize, lemmatization, make_sentences
+
+lemmatizer = WordNetLemmatizer()
 
 data = pd.read_csv('dataFolder/sentiment_analysis.csv', encoding="latin-1")
 data = data.drop(columns=["textID", "selected_text", "Time of Tweet", "Age of User", "Country", "Population -2020", "Land Area (Km²)", "Density (P/Km²)"])
@@ -24,59 +24,16 @@ data.replace({"positive": 1, "negative": 0}, inplace=True)
 Edited_Review = data['text'].copy()
 data['text_without_stopwords'] = Edited_Review
 
-def preprocess_Reviews_data(data, name):
-    data[name] = data[name].str.lower()
-    data[name] = data[name].apply(lambda x: re.sub(r'\B#\S+', '', x))
-    data[name] = data[name].apply(lambda x: re.sub(r"http\S+", "", x))
-    data[name] = data[name].apply(lambda x: ' '.join(re.findall(r"[\w']+", x)))
-    data[name] = data[name].apply(lambda x: re.sub(r'\s+', ' ', x, flags=re.I))
-    data[name] = data[name].apply(lambda x: re.sub(r'\s+[a-zA-Z]\s+', ' ', x))
-    data[name] = data[name].apply(lambda x: re.sub('@[^\s]+', ' ', x))
-
-def rem_stopwords_tokenize(data, name):
-    def getting(sen):
-        example_sent = sen
-        filtered_sentence = []
-        stop_words = set(stopwords.words('english'))
-        word_tokens = word_tokenize(example_sent)
-        filtered_sentence = [w for w in word_tokens if not w in stop_words]
-        return filtered_sentence
-    x = []
-    for i in data[name].values:
-        x.append(getting(i))
-    data[name] = x
-
-lemmatizer = WordNetLemmatizer()
-def Lemmatization(data, name):
-    def getting2(sen):
-        if isinstance(sen, list):
-            sen = ' '.join(sen)
-        example = sen
-        output_sentence = []
-        word_tokens2 = word_tokenize(example)
-        lemmatized_output = [lemmatizer.lemmatize(w) for w in word_tokens2]
-        without_single_chr = [word for word in lemmatized_output if len(word) > 2]
-        cleaned_data_title = [word for word in without_single_chr if not word.isnumeric()]
-        return cleaned_data_title
-    x = []
-    for i in data[name].values:
-        x.append(getting2(i))
-    data[name] = x
-
-def make_sentences(data, name):
-    data[name] = data[name].apply(lambda x: ' '.join([i for i in x]))
-    data[name] = data[name].apply(lambda x: re.sub(r'\s+', ' ', x, flags=re.I))
-
 data["text_without_stopwords"] = data["text_without_stopwords"].fillna('').astype(str)
 
-preprocess_Reviews_data(data, 'text_without_stopwords')
+preprocess_data_general(data, 'text_without_stopwords')
 rem_stopwords_tokenize(data, 'text_without_stopwords')
 make_sentences(data, 'text_without_stopwords')
 
 final_Edit = data['text_without_stopwords'].copy()
 data["After_lemmatization"] = final_Edit
 
-Lemmatization(data, 'After_lemmatization')
+lemmatization(data, 'After_lemmatization')
 make_sentences(data, 'After_lemmatization')
 
 pos = neg = obj = count = 0

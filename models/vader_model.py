@@ -25,4 +25,5 @@ def get_accuracy(df):
             correct += 1
 
     accuracy = correct / total
-    return ("VADER", f"{accuracy:.2%}")
+    preds = list(df["vader"])
+    return ("VADER", accuracy, preds)

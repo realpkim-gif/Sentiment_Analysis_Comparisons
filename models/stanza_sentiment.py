@@ -47,6 +47,13 @@ true_to_num()
 print(data.shape)
 print(len(output))
 print(scoring(output,num_labels))
+
+def get_accuracy():
+    from sklearn.metrics import accuracy_score
+    label_map = {0: "negative", 1: "neutral", 2: "positive"}
+    preds = [label_map[p] for p in output]
+    acc = accuracy_score(num_labels, output)
+    return ("Stanza", acc, preds)
 print("Ultimately, still not very accurate but should be more accurate than Vader as it is Neural network based. Because it is CNN based, it can understand more complex wording like (not bad) being positive. While Vader only looks at simple rules and looks up words in its lexicon, Stanza has a pretrained CNN that can understand complex wording and understand how words affect other words in a given context."
       "However because Stanza was trained on formal text (news articles, books) not Twitter/social media. "
       "Slang, abbreviations, emojis, and sarcasm all mix it up. This data has a lot of that")

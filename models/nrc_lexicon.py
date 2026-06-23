@@ -3,7 +3,7 @@ import spacy
 import pandas as pd
 from spacy.cli import download
 import re
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 download("en_core_web_sm")
 nlp = spacy.load("en_core_web_sm")
@@ -147,8 +147,7 @@ def evaluate(df):
 
     # Accuracy stats
     print(f"Correct : {correct}/{total}")
-    print(f"Wrong   : {wrong}/{total}")
-    print(f"Accuracy: {correct / total:.2%}")
+    print(f"Accuracy: {accuracy_score(true_labels, pred_labels, zero_division=0):.2%}")
     print(f"Precision: {precision_score(true_labels, pred_labels, average='weighted', zero_division=0):.2%}")
     print(f"Recall:    {recall_score(true_labels, pred_labels, average='weighted', zero_division=0):.2%}")
     print(f"F1 Score:  {f1_score(true_labels, pred_labels, average='weighted', zero_division=0):.2%}")
@@ -171,6 +170,14 @@ def evaluate(df):
     return emotion_df
 
 emotion_series = evaluate(df)
+
+def get_accuracy():
+    from sklearn.metrics import accuracy_score
+    true = df["sentiment"].str.lower()
+    pred = df["sentiment_predicted"].str.lower()
+    acc = accuracy_score(true, pred)
+    preds = list(pred)
+    return ("NRC Lexicon", acc, preds)
 
 
 
