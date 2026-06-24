@@ -1,6 +1,16 @@
 from afinn import Afinn
+import pandas as pd
 
 afinn = Afinn(language='en')
+
+data = pd.read_csv("dataFolder/train.csv", encoding="latin-1")
+data = data.dropna(subset=["text"])
+
+scores = []
+for i in data["text"]:
+    scores.append(afinn.score(i))
+
+data["affin score"] = scores
 
 def afinn_to_sentiment(score):
     if score > 0:
@@ -9,6 +19,8 @@ def afinn_to_sentiment(score):
         return "negative"
     else:
         return "neutral"
+
+data["afinn_pred"] = data["affin score"].apply(afinn_to_sentiment)
 
 def get_accuracy(df):
     scores = []

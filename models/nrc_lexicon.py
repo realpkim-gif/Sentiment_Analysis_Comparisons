@@ -147,10 +147,10 @@ def evaluate(df):
 
     # Accuracy stats
     print(f"Correct : {correct}/{total}")
-    print(f"Accuracy: {accuracy_score(true_labels, pred_labels, zero_division=0):.2%}")
-    print(f"Precision: {precision_score(true_labels, pred_labels, average='weighted', zero_division=0):.2%}")
-    print(f"Recall:    {recall_score(true_labels, pred_labels, average='weighted', zero_division=0):.2%}")
-    print(f"F1 Score:  {f1_score(true_labels, pred_labels, average='weighted', zero_division=0):.2%}")
+    print(f"Accuracy: {accuracy_score(true_labels, pred_labels):.2%}")
+    print(f"Precision: {precision_score(true_labels, pred_labels, average='weighted'):.2%}")
+    print(f"Recall:    {recall_score(true_labels, pred_labels, average='weighted'):.2%}")
+    print(f"F1 Score:  {f1_score(true_labels, pred_labels, average='weighted'):.2%}")
 
     # Dominant emotion distribution
     emotion_df = pd.DataFrame(emotion_series)
