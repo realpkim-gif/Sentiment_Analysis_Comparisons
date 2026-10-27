@@ -9,7 +9,7 @@ from models import sentiwordnet_sentiment_analysis as sentiwordnet_model
 from models import flair_sentiment_analysis as flair_model
 from sklearn.metrics import confusion_matrix
 
-os.makedirs("plots", exist_ok=True)
+os.makedirs("plots/Raw plots", exist_ok=True)
 
 df = pd.read_csv(r"dataFolder/train.csv", encoding="latin-1")
 df = df[["text", "sentiment"]].fillna("")
@@ -37,7 +37,7 @@ nrc_result       = nrc_lexicon.get_accuracy()
 
 results = [vader_result, textblob_result, afinn_result, spacy_result, swn_result, flair_result, stanza_result, nrc_result]
 true_labels = [df["sentiment"], df["sentiment"], df["sentiment"], df["sentiment"], df["sentiment"],
-               df_binary["sentiment"], df["sentiment"], df["sentiment"]]
+               df_binary["sentiment"], stanza_sentiment.data["sentiment"], df["sentiment"]]
 
 def scoring(inference, label):
     f1        = f1_score(label, inference, average="weighted", zero_division=0)
@@ -65,7 +65,6 @@ print("Saved: model_scores.csv")
 
 confusion = []
 for i in range(len(results)):
-    print(f"Confusion Matrix for {results[i][0]}")
     confusion.append(confusion_matrix(list(true_labels[i]), results[i][2]))
 
 for i, cm in enumerate(confusion):
@@ -76,7 +75,7 @@ for i, cm in enumerate(confusion):
     plt.xlabel("Predicted")
     plt.ylabel("True")
     plt.title(f"{name} Confusion Matrix")
-    plt.savefig(f"plots/{name}_confusion_matrix.png", bbox_inches="tight")
+    plt.savefig(f"plots/Raw plots/{name}_confusion_matrix.png", bbox_inches="tight")
     plt.close()
 
 
@@ -96,9 +95,9 @@ for i in range(len(results)):
     ax.set_ylabel("Count")
     plt.figtext(0.5, -0.04, f"Accuracy: {acc:.2%}  |  F1: {f1}  |  Precision: {pre}  |  Recall: {rec}", ha="center", fontsize=8)
     plt.tight_layout()
-    plt.savefig(f"plots/{name.replace(' ', '_').replace('/', '_')}_distribution.png", bbox_inches="tight")
+    plt.savefig(f"plots/Raw plots/{name.replace(' ', '_').replace('/', '_')}_distribution.png", bbox_inches="tight")
     plt.close()
-    print(f"Saved: plots/{name}_distribution.png")
+    print(f"Saved: plots/Raw plots/{name}_distribution.png")
 
 # --- Final bar chart: all model accuracies ---
 fig, ax = plt.subplots(figsize=(10, 5))
@@ -111,6 +110,6 @@ for i, (_, acc, _) in enumerate(results):
     ax.text(i, acc * 100 + 1, f"{acc:.2%}", ha="center", fontsize=9)
 plt.xticks(rotation=15)
 plt.tight_layout()
-plt.savefig("plots/all_models_accuracy.png")
+plt.savefig("plots/Raw plots/all_models_accuracy.png")
 plt.close()
-print("Saved: plots/all_models_accuracy.png")
+print("Saved: plots/Raw plots/all_models_accuracy.png")

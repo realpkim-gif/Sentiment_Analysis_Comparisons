@@ -143,13 +143,28 @@ This will:
 | Model        | Label                            | Key Characteristics                                                                 |
 |--------------|----------------------------------|-------------------------------------------------------------------------------------|
 | VADER        | Most Used for Social Media       | Lexicon-based, rule-based scoring, designed for social media                        |
-| TextBlob     | Beginner Friendly                | Lexicon-based, simple polarity scoring, good for clean text                         |
+| TextBlob     | Beginner Friendly                | Lexicon-based, simple polarity scoring, good for clean text, can also predict subjectivity (0 = objective, 1 = subjective) |
 | AFINN        | Simplest Lexicon                 | Weighted word scores, small vocabulary                                              |
 | SpaCy + LR   | Most Accurate (in this project)  | ML-based, TF-IDF + Logistic Regression, spaCy tokenizer                            |
 | SentiWordNet | Most Linguistically Detailed     | WordNet POS lookup, scores nouns, adjectives, and adverbs                           |
-| Flair        | Best Neural Network for Reviews  | Pretrained neural network, outputs a confidence score per prediction                |
+| Flair        | Best Neural Network for Reviews  | Pretrained neural network, outputs a confidence score per prediction, binary only (positive/negative) |
 | Stanza       | Best for Formal Text             | CNN-based, trained on formal text, multilingual, high accuracy on news/books        |
 | NRC Lexicon  | Best for Emotion Analysis        | Maps words to 8 emotions + pos/neg, multilingual, captures complex emotional signal |
+
+---
+
+## Model Capabilities
+
+| Model        | POS Tagging | Subjectivity | Notes                                                                 |
+|--------------|-------------|--------------|-----------------------------------------------------------------------|
+| VADER        | No          | No           | Pure rule-based heuristics — no grammatical analysis whatsoever       |
+| TextBlob     | Yes         | Yes          | POS tagging available but not used in sentiment scoring; subjectivity score (0 = objective, 1 = subjective) is a separate output |
+| AFINN        | No          | No           | Simple weighted word lookup only                                      |
+| SentiWordNet | Yes         | No           | POS tagging is central to scoring — same word scored differently as noun vs verb |
+| NRC Lexicon  | No          | No           | Emotion lookup only                                                   |
+| Flair        | No          | No           | Neural network — binary only (positive/negative), outputs confidence score per prediction |
+| Stanza       | Yes         | No           | Full NLP pipeline including POS, NER, dependency parsing              |
+| SpaCy + LR   | Yes         | No           | spaCy used for tokenization and lemmatization before TF-IDF           |
 
 ---
 

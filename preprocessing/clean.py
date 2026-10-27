@@ -6,6 +6,8 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
+import pandas as pd
+
 
 # spacy setup
 nlp = spacy.load("en_core_web_sm")
@@ -14,9 +16,20 @@ lemmatizer = WordNetLemmatizer()
 
 punct = string.punctuation
 
+abbreviations = pd.read_csv("dataFolder/abbrevations.csv")
+abbrev_dict = dict(zip(abbreviations["slang"].str.lower(), abbreviations["meaning"].str.lower()))
+
+def apply_abbreviations(text):
+    words = text.lower().split()
+    result = []
+    for word in words:
+        if word in abbrev_dict:
+            result.append(abbrev_dict[word])
+        else:
+            result.append(word)
+    return " ".join(result)
 
 # --- flair-style cleaning ---
-
 def remove_urls(x):
     cleaned_string = re.sub(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b', '', str(x), flags=re.MULTILINE)
     return cleaned_string
@@ -40,35 +53,6 @@ def remove_symbols(x):
 
 
 # --- vader/textblob-style cleaning ---
-
-def remove_punct(text):
-    text = re.sub(r'http\S+', '', text)
-    text = re.sub(r'@\w+', '', text)
-    text = re.sub(r'(.)\1{2,}', r'\1', text)
-
-    text = re.sub(r"n[`']t", " not", text)
-    text = re.sub(r"[`']re", " are", text)
-    text = re.sub(r"[`']ve", " have", text)
-    text = re.sub(r"[`']ll", " will", text)
-    text = re.sub(r"[`']d",  " would", text)
-    text = re.sub(r"[`']s",  "", text)
-
-    text_nopunct = "".join([char for char in text if char not in string.punctuation])
-    text_nopunct = text_nopunct.lower()
-
-    stop_words = set(stopwords.words('english'))
-    tokens = re.split('\W+', text_nopunct)
-    filtered = [w for w in tokens if w not in stop_words]
-
-    return filtered
-
-def lemmetize(text):
-    wn = nltk.WordNetLemmatizer()
-    lemmatized = []
-    for i in text:
-        lemm = wn.lemmatize(i)
-        lemmatized.append(lemm)
-    return lemmatized
 
 def strip_html(text):
     return re.sub(r"<[^>]+>", "", text)

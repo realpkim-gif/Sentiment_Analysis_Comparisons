@@ -35,7 +35,7 @@ df = pd.read_csv(r"dataFolder/train.csv", encoding="latin-1")
 df = df.dropna(subset=["text"])
 df = df[df["text"].str.strip() != ""]
 
-print("Starting preprocess...")
+print("Starting preprocess for NRC_Lexicon...")
 df["text"] = df["text"].apply(preprocess)
 df.to_csv("data_spaCy.csv", index=False)
 
@@ -114,7 +114,6 @@ def classify(emotion_text):
 print("classifying text...")
 df["sentiment_predicted"], df["dominant_emotion"] = zip(*df["emotion_text"].apply(classify)) # zip(*) splits a list of tuples into separate lists — zip pairs them together
 
-print(df[["text", "sentiment_predicted","emotion_text"]].head(10))
 
 def evaluate(df):
     correct = 0

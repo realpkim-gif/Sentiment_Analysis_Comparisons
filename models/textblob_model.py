@@ -1,8 +1,10 @@
 from textblob import TextBlob
 from preprocessing.clean import strip_html
+import re
 
 def textblob_sentiment(text):
     text = strip_html(text)
+    text = re.sub(r'(.)\1{2,}', r'\1\1', text)
     score = TextBlob(text).sentiment.polarity
 
     if score >= 0.05:
