@@ -1,10 +1,6 @@
 from textblob import TextBlob
-from preprocessing.clean import strip_html
-import re
 
 def textblob_sentiment(text):
-    text = strip_html(text)
-    text = re.sub(r'(.)\1{2,}', r'\1\1', text)
     score = TextBlob(text).sentiment.polarity
 
     if score >= 0.05:
@@ -14,16 +10,5 @@ def textblob_sentiment(text):
     else:
         return "neutral"
 
-def get_accuracy(df):
-    df["textblob_pred"] = df["text"].apply(textblob_sentiment)
-
-    correct = 0
-    total = 0
-    for i in range(len(df)):
-        total += 1
-        if df["sentiment"].iloc[i] == df["textblob_pred"].iloc[i]:
-            correct += 1
-
-    accuracy = correct / total
-    preds = list(df["textblob_pred"])
-    return ("TextBlob", accuracy, preds)
+def predict(df):
+    return df["clean_text"].apply(textblob_sentiment)

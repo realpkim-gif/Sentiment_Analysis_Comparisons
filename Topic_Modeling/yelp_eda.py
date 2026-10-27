@@ -1,14 +1,3 @@
-"""Exploratory analysis of the Yelp Open Dataset (https://business.yelp.com/data/resources/open-dataset/).
-
-Download the JSON version, extract it, and put the files in Topic_Modeling/yelp_data/ :
-    yelp_academic_dataset_business.json
-    yelp_academic_dataset_review.json      (~5 GB, read in chunks)
-    yelp_academic_dataset_user.json        (optional)
-    yelp_academic_dataset_tip.json         (optional)
-
-Run:  python Topic_Modeling/yelp_eda.py
-Charts are saved to Topic_Modeling/plots/.
-"""
 import os
 from collections import Counter
 

@@ -1,12 +1,3 @@
-"""BERTopic on Yelp restaurant reviews.
-
-Embedding model: sentence-transformers/all-MiniLM-L6-v2 from Hugging Face (fast, strong general-purpose
-sentence embeddings, BERTopic's default). Swap in "BAAI/bge-small-en-v1.5" or "all-mpnet-base-v2" for
-higher quality at more compute cost.
-
-Requires: pip install bertopic sentence-transformers pandas
-Run:  python Topic_Modeling/Berttopic.py
-"""
 import os
 
 import pandas as pd

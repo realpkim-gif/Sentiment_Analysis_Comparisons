@@ -2,42 +2,38 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import f1_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from models import vader_model, textblob_model, afinn_model, stanza_sentiment, nrc_lexicon
 from models import spacy_sentiment_analysis as spacy_model
 from models import sentiwordnet_sentiment_analysis as sentiwordnet_model
 from models import flair_sentiment_analysis as flair_model
 from sklearn.metrics import confusion_matrix
 
-os.makedirs("plots/Raw plots", exist_ok=True)
+os.makedirs("../plots/Optimized_Preprocessing_Plots", exist_ok=True)
 
-df = pd.read_csv(r"dataFolder/train.csv", encoding="latin-1")
+df = pd.read_csv(r"../dataFolder/train.csv", encoding="latin-1")
 df = df[["text", "sentiment"]].fillna("")
 
 # --- Run all models ---
-print("Running VADER...")
-vader_result     = vader_model.get_accuracy(df.copy())
-print("Running TextBlob...")
-textblob_result  = textblob_model.get_accuracy(df.copy())
-print("Running AFINN...")
-afinn_result     = afinn_model.get_accuracy(df.copy())
-print("Running SpaCy + LR...")
-spacy_result     = spacy_model.get_accuracy(df.copy())
-print("Running SentiWordNet...")
-swn_result       = sentiwordnet_model.get_accuracy(df.copy())
+def run(name, predict, data):
+    print(f"Running {name}...")
+    preds = predict(data.copy())
+    true = df.loc[preds.index, "sentiment"]
+    return (name, accuracy_score(true, preds), list(preds)), true
 
-print("Running Flair...")
 df_binary = df[df["sentiment"] != "neutral"].copy()
-flair_result     = flair_model.get_accuracy(df_binary)
 
-print("Running Stanza (already computed on import)...")
-stanza_result    = stanza_sentiment.get_accuracy()
-print("Running NRC Lexicon (already computed on import)...")
-nrc_result       = nrc_lexicon.get_accuracy()
+runs = [run("VADER", vader_model.predict, df),
+        run("TextBlob", textblob_model.predict, df),
+        run("AFINN", afinn_model.predict, df),
+        run("SpaCy + LR", spacy_model.predict, df),
+        run("SentiWordNet", sentiwordnet_model.predict, df),
+        run("Flair", flair_model.predict, df_binary),
+        run("Stanza", stanza_sentiment.predict, df),
+        run("NRC Lexicon", nrc_lexicon.predict, df)]
 
-results = [vader_result, textblob_result, afinn_result, spacy_result, swn_result, flair_result, stanza_result, nrc_result]
-true_labels = [df["sentiment"], df["sentiment"], df["sentiment"], df["sentiment"], df["sentiment"],
-               df_binary["sentiment"], stanza_sentiment.data["sentiment"], df["sentiment"]]
+results = [r[0] for r in runs]
+true_labels = [r[1] for r in runs]
 
 def scoring(inference, label):
     f1        = f1_score(label, inference, average="weighted", zero_division=0)
@@ -75,7 +71,7 @@ for i, cm in enumerate(confusion):
     plt.xlabel("Predicted")
     plt.ylabel("True")
     plt.title(f"{name} Confusion Matrix")
-    plt.savefig(f"plots/Raw plots/{name}_confusion_matrix.png", bbox_inches="tight")
+    plt.savefig(f"../plots/Optimized_Preprocessing_Plots/{name}_confusion_matrix.png", bbox_inches="tight")
     plt.close()
 
 
@@ -95,9 +91,9 @@ for i in range(len(results)):
     ax.set_ylabel("Count")
     plt.figtext(0.5, -0.04, f"Accuracy: {acc:.2%}  |  F1: {f1}  |  Precision: {pre}  |  Recall: {rec}", ha="center", fontsize=8)
     plt.tight_layout()
-    plt.savefig(f"plots/Raw plots/{name.replace(' ', '_').replace('/', '_')}_distribution.png", bbox_inches="tight")
+    plt.savefig(f"../plots/Optimized_Preprocessing_Plots/{name.replace(' ', '_').replace('/', '_')}_distribution.png", bbox_inches="tight")
     plt.close()
-    print(f"Saved: plots/Raw plots/{name}_distribution.png")
+    print(f"Saved: ../plots/Optimized_Preprocessing_Plots/{name}_distribution.png")
 
 # --- Final bar chart: all model accuracies ---
 fig, ax = plt.subplots(figsize=(10, 5))
@@ -110,6 +106,6 @@ for i, (_, acc, _) in enumerate(results):
     ax.text(i, acc * 100 + 1, f"{acc:.2%}", ha="center", fontsize=9)
 plt.xticks(rotation=15)
 plt.tight_layout()
-plt.savefig("plots/Raw plots/all_models_accuracy.png")
+plt.savefig("../plots/Optimized_Preprocessing_Plots/all_models_accuracy.png")
 plt.close()
-print("Saved: plots/Raw plots/all_models_accuracy.png")
+print("Saved: ../plots/Optimized_Preprocessing_Plots/all_models_accuracy.png")

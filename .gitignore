@@ -1,2 +1,4 @@
 Topic_Modeling/yelp_data/
 __pycache__/
+data_spaCy.csv
+emotion_series.csv

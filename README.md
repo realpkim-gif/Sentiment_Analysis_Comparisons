@@ -15,7 +15,7 @@ To compare the performance of rule-based, lexicon-based, neural network, and mac
 
 This project started as an exploration of different sentiment analysis approaches applied to a Twitter dataset. It began with rule-based models (VADER, TextBlob) to establish a baseline, then expanded to lexicon-based methods (AFINN, SentiWordNet, NRC EmoLex), a neural network model (Flair), a CNN-based model (Stanza), and a machine learning pipeline using spaCy preprocessing with TF-IDF and Logistic Regression.
 
-The project was then organized into a structured Python package with a shared preprocessing module (`preprocessing/clean.py`), individual model files under `models/`, and a `main.py` that imports all models, runs evaluations, and generates comparison visualizations saved to `plots/`.
+The project was then organized into a structured Python package with a shared preprocessing module (`preprocessing/clean.py`), individual model files under `models/`, and a `compare_models.py` that imports all models, runs evaluations, and generates comparison visualizations saved to `plots/`.
 
 ---
 
@@ -56,7 +56,7 @@ Sentiment_Chatbot/
 │   └── *.ipynb                          # Original notebooks kept as reference
 ├── notes/                               # Personal analysis notes per model
 ├── plots/                               # Output charts (auto-generated)
-├── main.py                              # Runs all models and saves visualizations
+├── compare_models.py                              # Runs all models and saves visualizations
 └── README.md
 ```
 
@@ -93,7 +93,7 @@ nltk.download('stopwords')
 Ensure the working directory is the **project root** (`Sentiment_Chatbot/`) so that relative paths like `dataFolder/train.csv` resolve correctly.
 
 ```bash
-python main.py
+python compare_models.py
 ```
 
 This will:
@@ -127,14 +127,14 @@ This will:
 - **NRC EmoLex** is an emotion lexicon, not a true sentiment classifier. It was included for comparison but is not well-suited for 3-class sentiment prediction.
 - **AFINN** has a small lexicon and performs poorly on out-of-vocabulary social media language.
 - **Runtime:** Flair and Stanza are significantly slower than other models due to neural inference on the full dataset.
-- **SentiWordNet standalone** uses a different CSV (`sentiment_analysis.csv`) than what `main.py` passes in (`train.csv`). Results between standalone and `main.py` runs may differ slightly.
+- **SentiWordNet standalone** uses a different CSV (`sentiment_analysis.csv`) than what `compare_models.py` passes in (`train.csv`). Results between standalone and `compare_models.py` runs may differ slightly.
 
 ---
 
 ## Warnings
 
 - The `.py` files inside `models/` that were converted from Jupyter notebooks (`sentiwordnet_sentiment_analysis.py`, `flair_sentiment_analysis.py`, `spacy_sentiment_analysis.py`) may be missing some inline comments and markdown section headers present in the original `.ipynb` files. The original notebooks are kept alongside each `.py` file for reference.
-- Stanza and NRC EmoLex run all preprocessing on import, which means importing them in `main.py` triggers full dataset processing immediately.
+- Stanza and NRC EmoLex run all preprocessing on import, which means importing them in `compare_models.py` triggers full dataset processing immediately.
 
 ---
 
@@ -174,5 +174,5 @@ This will:
 
 ## Notes
 
-- AI assistance (Claude) was used for project organization and code structuring — specifically refactoring notebook code into importable modules (`preprocessing/clean.py`, `models/`) and organizing visualization code in `main.py`. All model logic, analysis, interpretation of results, and implementation decisions were completed and reviewed independently.
+- AI assistance (Claude) was used for project organization and code structuring — specifically refactoring notebook code into importable modules (`preprocessing/clean.py`, `models/`) and organizing visualization code in `compare_models.py`. All model logic, analysis, interpretation of results, and implementation decisions were completed and reviewed independently.
 - Some comments from the original Jupyter notebooks may be missing in the converted `.py` files. Refer to the `.ipynb` files in `models/` for the full annotated versions.
