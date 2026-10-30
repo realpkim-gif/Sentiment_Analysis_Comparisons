@@ -93,6 +93,6 @@ models_topic_error = pd.DataFrame(columns=["model", "topic_words"])
 
 for i in df['model'].unique():
     for j in BertTopic.topic_model.get_topics():
-        df.loc[len(df), "topic_words"] = BertTopic(df_loaded_false["text"][j])
+        models_topic_error[len(df_loaded_false), "topic_words"] = BertTopic(df_loaded_false["text"][j])
 
-df_loaded_false.to_csv("Topic_Modeling/Model_Topic_Errors", index=False)
+models_topic_error.to_csv("Topic_Modeling/Model_Topic_Errors", index=False)
