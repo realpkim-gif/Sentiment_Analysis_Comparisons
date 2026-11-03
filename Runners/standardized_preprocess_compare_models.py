@@ -11,6 +11,8 @@ from models import flair_sentiment_analysis as flair_model
 from sklearn.metrics import confusion_matrix
 
 os.makedirs("../plots/Standardized_Preprocessing_Plots", exist_ok=True)
+os.makedirs("../plots/Standardized_Preprocessing_Plots/Confusion_Matrices", exist_ok=True)
+os.makedirs("../plots/Standardized_Preprocessing_Plots/Graphs", exist_ok=True)
 
 df = pd.read_csv(r"../dataFolder/train.csv", encoding="latin-1")
 df = df[["text", "sentiment"]].fillna("")
@@ -73,7 +75,7 @@ for i, cm in enumerate(confusion):
     plt.xlabel("Predicted")
     plt.ylabel("True")
     plt.title(f"{name} Confusion Matrix")
-    plt.savefig(f"../plots/Standardized_Preprocessing_Plots/{name}_confusion_matrix.png", bbox_inches="tight")
+    plt.savefig(f"../plots/Standardized_Preprocessing_Plots/Confusion_Matrices/{name}_confusion_matrix.png", bbox_inches="tight")
     plt.close()
 
 
@@ -93,9 +95,9 @@ for i in range(len(results)):
     ax.set_ylabel("Count")
     plt.figtext(0.5, -0.04, f"Accuracy: {acc:.2%}  |  F1: {f1}  |  Precision: {pre}  |  Recall: {rec}", ha="center", fontsize=8)
     plt.tight_layout()
-    plt.savefig(f"../plots/Standardized_Preprocessing_Plots/{name.replace(' ', '_').replace('/', '_')}_distribution.png", bbox_inches="tight")
+    plt.savefig(f"../plots/Standardized_Preprocessing_Plots/Graphs/{name.replace(' ', '_').replace('/', '_')}_distribution.png", bbox_inches="tight")
     plt.close()
-    print(f"Saved: ../plots/Standardized_Preprocessing_Plots/{name}_distribution.png")
+    print(f"Saved: ../plots/Standardized_Preprocessing_Plots/Graphs/{name}_distribution.png")
 
 # --- Final bar chart: all model accuracies ---
 fig, ax = plt.subplots(figsize=(10, 5))
@@ -108,6 +110,6 @@ for i, (_, acc, _) in enumerate(results):
     ax.text(i, acc * 100 + 1, f"{acc:.2%}", ha="center", fontsize=9)
 plt.xticks(rotation=15)
 plt.tight_layout()
-plt.savefig("../plots/Standardized_Preprocessing_Plots/all_models_accuracy.png")
+plt.savefig("../plots/Standardized_Preprocessing_Plots/Graphs/all_models_accuracy.png")
 plt.close()
-print("Saved: ../plots/Standardized_Preprocessing_Plots/all_models_accuracy.png")
+print("Saved: ../plots/Standardized_Preprocessing_Plots/Graphs/all_models_accuracy.png")
