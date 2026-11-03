@@ -93,4 +93,4 @@ def saveCorrect():
 saveErrors()
 saveCorrect()
 
-# BERTopic on the errors is a separate step: run Topic_Modeling/Model_Topic_Errors.py after this script
+# BERTopic on the errors is a separate step: run Topic_Modeling/Error_Topics.py after this script
