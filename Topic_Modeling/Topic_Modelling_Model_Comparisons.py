@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 from gensim.corpora import Dictionary
 from gensim.models import CoherenceModel
@@ -87,5 +89,6 @@ if __name__ == "__main__":
 
     results = pd.DataFrame(rows)
     print(results.to_string(index=False))
-    results.to_csv("model_metrics.csv", index=False) #key importance
-    predictions.to_csv("topic_predictions.csv", index=False)
+    os.makedirs("Model_Topic_Errors", exist_ok=True)  # make the folder if it doesn't exist yet
+    results.to_csv("Model_Topic_Errors/topic_modelling_metrics.csv", index=False) #key importance
+    predictions.to_csv("Model_Topic_Errors/topic_predictions.csv", index=False)

@@ -62,10 +62,10 @@ def predict(df):
     data2['senti_score'] = senti_score
 
     overall = []
-    for i in range(len(data2)):
-        if data2['senti_score'][i] >= 0.05:
+    for score in senti_score:
+        if score >= 0.05:
             overall.append('positive')
-        elif data2['senti_score'][i] <= -0.05:
+        elif score <= -0.05:
             overall.append('negative')
         else:
             overall.append('neutral')

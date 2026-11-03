@@ -34,11 +34,16 @@ def preprocess(df):
     text = text.str.replace(r"<[^>]+>", "", regex=True)                                        # html tags
     text = text.str.replace(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b', '', regex=True)    # urls
     text = text.str.replace("[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F1E0-\U0001F1FF]+", '', regex=True)  # emojis
-    text = text.str.replace(r"[^a-zA-Z0-9?!.,]+", ' ', regex=True)                             # symbols
+    text = text.str.replace("`", "'")                                                          # tweets use ` as an apostrophe
+    text = text.str.replace(r"[^a-zA-Z0-9?!.,']+", ' ', regex=True)                            # symbols (keep apostrophes: don't, wasn't)
     text = text.str.replace(r'\s+', ' ', regex=True)                                           # whitespace
     text = text.str.replace(r'(.)\1{2,}', r'\1\1', regex=True)                                 # sooooo -> soo
-    df["clean_text"] = text.str.strip()
+    text = text[text != ""].astype(str)                                                        #drop empty, keep when not equal to ""
 
+    df["clean_text"] = text.str.strip() #removes leading and trailing characters (spaces, tabs, and newlines by default) from each string element in a pandas Series
+    df=df.dropna(subset=["clean_text"]) #just drop one more time just to make sure
+
+    #Lemmatization
     lemmas = []
     for doc in nlp.pipe(df["clean_text"], batch_size=256):
         tokens = [token.lemma_.lower().strip() for token in doc]

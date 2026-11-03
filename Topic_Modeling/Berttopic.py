@@ -20,6 +20,7 @@ def BertTopic(texts):
         nr_topics="auto",
         verbose=True,
     )
+
     pred, probs = topic_model.fit_transform(docs, embeddings)  # predicted topic for each review (-1 = outlier)
 
     topic_model.get_topic_info().to_csv("yelp_topics.csv", index=False)
